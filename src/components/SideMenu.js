@@ -9,11 +9,11 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import "../views/sandbox/index.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const { Sider } = Layout;
-export default function SideMenu() {
+export default function SideMenu(props) {
   const [collapsed, setCollapsed] = useState(false);
 
   const navigate = useNavigate();
@@ -21,6 +21,7 @@ export default function SideMenu() {
     console.log(e.key);
     navigate(e.key);
   };
+
   useEffect(() => {
     axios.get("http://localhost:8000/rights?_embed=children").then((res) => {
       console.log(res.data);
@@ -58,17 +59,23 @@ export default function SideMenu() {
           }),
         })
   );
-
+  const selectedKeys = [useLocation().pathname];
+  const defaultOpenKeys = ["/" + useLocation().pathname.split("/")[1]];
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
-      <div className="logo">Global News System</div>
-      <Menu
-        onClick={toPage}
-        defaultSelectedKeys={["/home"]}
-        mode="inline"
-        items={items}
-        theme="dark"
-      />
+      <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
+        <div className="logo">Global News System</div>
+        <div style={{ flex: 1, overflow: "auto" }}>
+          <Menu
+            onClick={toPage}
+            selectedKeys={selectedKeys}
+            mode="inline"
+            items={items}
+            theme="dark"
+            defaultOpenKeys={defaultOpenKeys}
+          />
+        </div>
+      </div>
     </Sider>
   );
 }
