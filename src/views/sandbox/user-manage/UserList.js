@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Table, Button, Modal, Switch, Form } from "antd";
+import { Table, Button, Modal, Switch } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -9,7 +9,7 @@ import axios from "axios";
 import UserForm from "../../../components/usermanage/UserForm";
 export default function UserList() {
   const { confirm } = Modal;
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
   const [dataSource, setDataSource] = useState([]);
   const [open, setOpen] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
@@ -19,12 +19,31 @@ export default function UserList() {
   const [current, setCurrent] = useState();
   const addForm = useRef(null);
   const updateForm = useRef(null);
+  const { roleId, region, username } = JSON.parse(
+    localStorage.getItem("token")
+  );
+
   useEffect(() => {
+    const roleObj = {
+      1: "superadmin",
+      2: "admin",
+      3: "editor",
+    };
     axios.get("http://localhost:8000/users?_expand=role").then((res) => {
       const list = res.data;
-      setDataSource(list);
+      setDataSource(
+        roleObj[roleId] === "superadmin"
+          ? list
+          : [
+              ...list.filter((item) => item.username === username),
+              ...list.filter(
+                (item) =>
+                  item.region === region && roleObj[item.roleId] === "editor"
+              ),
+            ]
+      );
     });
-  }, []);
+  }, [roleId, region, username]);
   useEffect(() => {
     axios.get("http://localhost:8000/regions").then((res) => {
       const list = res.data;

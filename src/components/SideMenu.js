@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const { Sider } = Layout;
+
 export default function SideMenu(props) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -21,7 +22,10 @@ export default function SideMenu(props) {
     console.log(e.key);
     navigate(e.key);
   };
-
+  const {
+    role: { rights },
+  } = JSON.parse(localStorage.getItem("token"));
+  console.log(rights);
   useEffect(() => {
     axios.get("http://localhost:8000/rights?_embed=children").then((res) => {
       console.log(res.data);
@@ -29,8 +33,7 @@ export default function SideMenu(props) {
     });
   }, []);
   const [menu, setMenu] = useState([]);
-
-  const items = [];
+  console.log(menu);
   const iconList = {
     "/home": <AppstoreOutlined />,
     "/user-manage": <UserSwitchOutlined />,
@@ -39,8 +42,10 @@ export default function SideMenu(props) {
     "/audit-manage": <EditOutlined />,
     "/publish-manage": <CarryOutOutlined />,
   };
+
+  const items = [];
   menu.map((item) =>
-    item.children.length === 0
+    item.children.length === 0 && rights.includes(item.key)
       ? items.push({
           key: item.key,
           label: item.title,
@@ -51,7 +56,7 @@ export default function SideMenu(props) {
           label: item.title,
           icon: iconList[item.key],
           children: item.children.map((data) => {
-            if (data.pagepermisson === 1) {
+            if (data.pagepermisson === 1 && rights.includes(data.key)) {
               return { key: data.key, label: data.title };
             } else {
               return "";
@@ -59,6 +64,7 @@ export default function SideMenu(props) {
           }),
         })
   );
+  console.log(items);
   const selectedKeys = [useLocation().pathname];
   const defaultOpenKeys = ["/" + useLocation().pathname.split("/")[1]];
   return (

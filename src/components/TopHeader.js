@@ -3,24 +3,20 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DownOutlined,
-  SmileOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Layout, Button, theme, Dropdown, Space, Avatar } from "antd";
+import { Layout, Button, theme, Dropdown, Space, Avatar, message } from "antd";
+import { useNavigate } from "react-router-dom";
 const { Header } = Layout;
+const {
+  role: { roleName },
+  username,
+} = JSON.parse(localStorage.getItem("token"));
 
 const items = [
   {
     key: "1",
-    label: (
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.antgroup.com"
-      >
-        admin
-      </a>
-    ),
+    label: roleName,
   },
 
   {
@@ -30,6 +26,13 @@ const items = [
   },
 ];
 export default function TopHeader() {
+  const navigate = useNavigate();
+  const onClick = ({ key }) => {
+    if (key === "2") {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  };
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
@@ -42,11 +45,14 @@ export default function TopHeader() {
       }}
     >
       <div style={{ float: "right" }}>
-        <span>welcom back</span>
+        <span>
+          welcom back <span style={{ color: "blueviolet" }}>{username}</span>
+        </span>
         {/* dropdown list here */}
         <Dropdown
           menu={{
             items,
+            onClick,
           }}
         >
           <a onClick={(e) => e.preventDefault()}>

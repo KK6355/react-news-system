@@ -10,24 +10,6 @@
       "roleId": 1
     },
     {
-      "username": "vicky",
-      "password": "123",
-      "roleState": true,
-      "default": false,
-      "region": "asian",
-      "roleId": 2,
-      "id": 2
-    },
-    {
-      "username": "kk",
-      "password": "123",
-      "roleState": true,
-      "default": false,
-      "region": "PC",
-      "roleId": 2,
-      "id": 3
-    },
-    {
       "username": "danny",
       "password": "123",
       "roleState": true,
@@ -39,7 +21,7 @@
     {
       "username": "alen",
       "password": "123",
-      "roleState": true,
+      "roleState": false,
       "default": false,
       "region": "SP",
       "roleId": 3,
@@ -71,6 +53,42 @@
       "region": "asian",
       "roleId": 3,
       "id": 8
+    },
+    {
+      "username": "test",
+      "password": "123",
+      "region": "",
+      "roleId": 1,
+      "roleState": true,
+      "default": false,
+      "id": 9
+    },
+    {
+      "username": "11",
+      "password": "12",
+      "region": "europe",
+      "roleId": 2,
+      "roleState": true,
+      "default": false,
+      "id": 10
+    },
+    {
+      "username": "ts3",
+      "password": "123",
+      "region": "sourthAmerican",
+      "roleId": 3,
+      "roleState": true,
+      "default": false,
+      "id": 11
+    },
+    {
+      "username": "ts4",
+      "password": "123",
+      "region": "sourthAmerican",
+      "roleId": 3,
+      "roleState": true,
+      "default": false,
+      "id": 12
     }
   ],
   "roles": [
@@ -84,7 +102,6 @@
         "/user-manage/delete",
         "/user-manage/update",
         "/user-manage/list",
-        "/right-manage",
         "/right-manage/role/list",
         "/right-manage/right/list",
         "/right-manage/role/update",
@@ -105,7 +122,8 @@
         "/publish-manage/unpublished",
         "/publish-manage/published",
         "/publish-manage/sunset",
-        "/home"
+        "/home",
+        "/right-manage"
       ]
     },
     {
@@ -323,7 +341,7 @@
       "id": 1,
       "title": "Home",
       "key": "/home",
-      "pagepermisson": 1,
+      "pagepermisson": 0,
       "grade": 1
     },
     {

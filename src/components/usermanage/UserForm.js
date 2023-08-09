@@ -5,6 +5,7 @@ const UserForm = forwardRef((props, ref) => {
   useEffect(() => {
     setDisabled(props.isUpdateDisabled);
   }, [props.isUpdateDisabled]);
+
   return (
     <Form layout="vertical" ref={ref}>
       <Form.Item
