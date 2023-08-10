@@ -14,6 +14,7 @@ import Published from "./publish-manage/Published";
 import Unpublished from "./publish-manage/Unpublished";
 import Sunset from "./publish-manage/Sunset";
 import axios from "axios";
+import NewsPreview from "./news-manage/NewsPreview";
 const LocalRouterMap = {
   "/home": <Home />,
   "/user-manage/list": <UserList />,
@@ -22,6 +23,7 @@ const LocalRouterMap = {
   "/news-manage/add": <NewsAdd />,
   "/news-manage/draft": <NewsDraft />,
   "/news-manage/category": <NewsCategory />,
+  "/news-manage/preview/:id": <NewsPreview />,
   "/audit-manage/audit": <Audit />,
   "/audit-manage/list": <AuditList />,
   "/publish-manage/published": <Published />,
@@ -40,7 +42,9 @@ export default function NewsRouter() {
     });
   }, []);
   const checkRoute = (item) => {
-    return LocalRouterMap[item.key] && item.pagepermisson;
+    return (
+      LocalRouterMap[item.key] && (item.pagepermisson || item.routepermisson)
+    );
   };
   const {
     role: { rights },
