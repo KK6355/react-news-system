@@ -1,19 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SideMenu from "../../components/SideMenu";
 import TopHeader from "../../components/TopHeader";
-import { Route, Routes, Navigate } from "react-router-dom";
-import Home from "./home/Home";
-import UserList from "./user-manage/UserList";
-import RoleList from "./right-manage/RoleList";
-import RightList from "./right-manage/RightList";
-import NoPermission from "../../nopermisson/NoPermission";
+import NewsRouter from "./NewsRouter";
 import { Layout, theme } from "antd";
 import "./NewsSandBox.css";
+import nProgress from "nprogress";
+import "nprogress/nprogress.css";
 const { Content } = Layout;
 export default function NewsSandBox() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  nProgress.start();
+  useEffect(() => {
+    nProgress.done();
+  }, []);
   return (
     <Layout className="ant-layout">
       <SideMenu />
@@ -27,14 +28,7 @@ export default function NewsSandBox() {
             background: colorBgContainer,
           }}
         >
-          <Routes>
-            <Route path="/" element={<Navigate to="/home" replace />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/user-manage/list" element={<UserList />} />
-            <Route path="/right-manage/role/list" element={<RoleList />} />
-            <Route path="/right-manage/right/list" element={<RightList />} />
-            <Route path="*" element={<NoPermission />} />
-          </Routes>
+          <NewsRouter />
         </Content>
       </Layout>
     </Layout>

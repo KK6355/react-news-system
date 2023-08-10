@@ -8,15 +8,16 @@ import {
 import { Layout, Button, theme, Dropdown, Space, Avatar, message } from "antd";
 import { useNavigate } from "react-router-dom";
 const { Header } = Layout;
-const {
-  role: { roleName },
-  username,
-} = JSON.parse(localStorage.getItem("token"));
+// const {
+//   role: { roleName },
+//   username,
+// } = JSON.parse(localStorage.getItem("token"));
 
 const items = [
   {
     key: "1",
-    label: roleName,
+    // label: roleName,
+    label: "admin",
   },
 
   {
@@ -46,7 +47,7 @@ export default function TopHeader() {
     >
       <div style={{ float: "right" }}>
         <span>
-          welcom back <span style={{ color: "blueviolet" }}>{username}</span>
+          welcom back <span style={{ color: "blueviolet" }}>admin</span>
         </span>
         {/* dropdown list here */}
         <Dropdown
