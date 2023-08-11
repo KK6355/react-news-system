@@ -7,13 +7,14 @@ import {
   Select,
   message,
   notification,
+  Breadcrumb,
 } from "antd";
 import style from "./News.module.css";
 import axios from "axios";
 import NewsEditor from "../../../components/newsmanage/NewsEditor";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function NewsAdd() {
+export default function NewsUpdate() {
   const [current, setCurrent] = useState(0);
   const [categoryList, setCategoryList] = useState([]);
   const [formInfo, setFormInfo] = useState({});
@@ -45,21 +46,27 @@ export default function NewsAdd() {
       setCategoryList(res.data);
     });
   }, []);
+  let { id } = useParams();
+  //const [newsInfo, setNewsInfo] = useState(null);
+  useEffect(() => {
+    axios.get(`/news/${id}?_expand=category&_expand=role`).then((res) => {
+      let { title, categoryId, content } = res.data;
+      NewsForm.current.setFieldsValue({
+        title,
+        categoryId,
+      });
+      setContent(content);
+    });
+    // console.log(id);
+  }, [id]);
   const NewsForm = useRef(null);
-  const user = JSON.parse(localStorage.getItem("token"));
+  //const user = JSON.parse(localStorage.getItem("token"));
   const handleSave = (auditState) => {
     axios
-      .post("/news", {
+      .patch(`/news/${id}`, {
         ...formInfo,
         content: content,
-        region: user.region,
-        author: user.username,
-        roleId: user.roleId,
         auditState: auditState,
-        publishState: 0,
-        createTime: Date.now(),
-        star: 0,
-        view: 0,
         //publishTime: 0,
       })
       .then((res) => {
@@ -76,7 +83,21 @@ export default function NewsAdd() {
 
   return (
     <div>
-      <h1>Add News</h1>
+      <Breadcrumb
+        items={[
+          {
+            title: "Home",
+          },
+          {
+            title: (
+              <a href="http://localhost:3000/#/news-manage/draft">
+                Back to draft list
+              </a>
+            ),
+          },
+        ]}
+      />
+      <h1>Update News</h1>
 
       <Steps
         current={current}
@@ -152,8 +173,9 @@ export default function NewsAdd() {
           <NewsEditor
             getContent={(value) => {
               setContent(value);
-              console.log(value);
+              //   console.log(value);
             }}
+            content={content}
           />
         </div>
         <div className={current === 2 ? "" : style.active}></div>

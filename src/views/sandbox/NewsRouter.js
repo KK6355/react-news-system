@@ -14,6 +14,7 @@ import Published from "./publish-manage/Published";
 import Unpublished from "./publish-manage/Unpublished";
 import Sunset from "./publish-manage/Sunset";
 import axios from "axios";
+import NewsUpdate from "./news-manage/NewsUpdate";
 import NewsPreview from "./news-manage/NewsPreview";
 const LocalRouterMap = {
   "/home": <Home />,
@@ -24,6 +25,7 @@ const LocalRouterMap = {
   "/news-manage/draft": <NewsDraft />,
   "/news-manage/category": <NewsCategory />,
   "/news-manage/preview/:id": <NewsPreview />,
+  "/news-manage/update/:id": <NewsUpdate />,
   "/audit-manage/audit": <Audit />,
   "/audit-manage/list": <AuditList />,
   "/publish-manage/published": <Published />,

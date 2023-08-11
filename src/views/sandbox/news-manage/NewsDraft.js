@@ -1,4 +1,4 @@
-import { Table, Button, Modal, Tree } from "antd";
+import { Table, Button, Modal, notification } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -7,24 +7,34 @@ import {
   ExclamationCircleFilled,
   VerticalAlignTopOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 export default function NewsDraft() {
+  const navigate = useNavigate();
   const { confirm } = Modal;
   const [dataSource, setDataSource] = useState([]);
-  const [rightList, setRightList] = useState([]);
-  const [currentRight, setCurrentRight] = useState([]);
-  const [currentId, setCurrentId] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { username } = JSON.parse(localStorage.getItem("token"));
   useEffect(() => {
     axios
       .get(`/news?author=${username}&auditState=0&_expand=category`)
       .then((res) => setDataSource(res.data));
   }, [username]);
-  useEffect(() => {
+
+  const handleCheck = (id) => {
     axios
-      .get("http://localhost:8000/rights?_embed=children")
-      .then((res) => setRightList(res.data));
-  }, []);
+      .patch(`/news/${id}`, {
+        auditState: 1,
+        //publishTime: 0,
+      })
+      .then((res) => {
+        navigate("/audit-manage/list");
+        notification.info({
+          message: `Notification`,
+          description: `News Submitted!`,
+          placement: "bottomRight",
+        });
+      });
+  };
   const columns = [
     {
       title: "ID",
@@ -71,24 +81,19 @@ export default function NewsDraft() {
             />
 
             <Button
-              type="primary"
               shape="circle"
               icon={<EditOutlined />}
               onClick={() => {
-                setIsModalOpen(true);
-                setCurrentRight(item.rights);
-                setCurrentId(item.id);
+                navigate(`/news-manage/update/${item.id}`);
               }}
             />
             <Button
               type="primary"
               shape="circle"
               icon={<VerticalAlignTopOutlined />}
-              // onClick={() => {
-              //   setIsModalOpen(true);
-              //   setCurrentRight(item.rights);
-              //   setCurrentId(item.id);
-              // }}
+              onClick={() => {
+                handleCheck(item.id);
+              }}
             />
           </div>
         );
@@ -113,31 +118,6 @@ export default function NewsDraft() {
     axios.delete(`/news/${item.id}`);
   };
 
-  const handleOk = () => {
-    console.log(currentRight);
-    setIsModalOpen(false);
-    setDataSource(
-      dataSource.map((item) => {
-        if (item.id === currentId) {
-          return {
-            ...item,
-            rights: currentRight,
-          };
-        }
-        return item;
-      })
-    );
-    axios.patch(`http://localhost:8000/roles/${currentId}`, {
-      rights: currentRight,
-    });
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  const onCheck = (checkedKeys) => {
-    setCurrentRight(checkedKeys.checked);
-  };
-
   return (
     <div>
       <Table
@@ -145,20 +125,6 @@ export default function NewsDraft() {
         columns={columns}
         rowKey={(item) => item.id}
       />
-      <Modal
-        title="Right manage Modal"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Tree
-          checkable
-          treeData={rightList}
-          checkedKeys={currentRight}
-          onCheck={onCheck}
-          checkStrictly={true}
-        />
-      </Modal>
     </div>
   );
 }
