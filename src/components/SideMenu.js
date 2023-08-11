@@ -11,12 +11,10 @@ import { Layout, Menu } from "antd";
 import "../views/sandbox/index.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { connect } from "react-redux";
 const { Sider } = Layout;
 
-export default function SideMenu(props) {
-  const [collapsed, setCollapsed] = useState(false);
-
+function SideMenu(props) {
   const navigate = useNavigate();
   const toPage = (e) => {
     console.log(e.key);
@@ -68,7 +66,7 @@ export default function SideMenu(props) {
   const selectedKeys = [useLocation().pathname];
   const defaultOpenKeys = ["/" + useLocation().pathname.split("/")[1]];
   return (
-    <Sider trigger={null} collapsible collapsed={collapsed}>
+    <Sider trigger={null} collapsible collapsed={props.isCollapsed}>
       <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
         <div className="logo">Global News System</div>
         <div style={{ flex: 1, overflow: "auto" }}>
@@ -85,3 +83,10 @@ export default function SideMenu(props) {
     </Sider>
   );
 }
+const mapStateToProps = ({ CollapsedReducer: { isCollapsed } }) => {
+  return {
+    isCollapsed,
+  };
+};
+
+export default connect(mapStateToProps)(SideMenu);

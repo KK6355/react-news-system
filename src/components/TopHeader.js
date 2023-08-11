@@ -1,23 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DownOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Layout, Button, theme, Dropdown, Space, Avatar, message } from "antd";
+import { Layout, Button, theme, Dropdown, Space, Avatar } from "antd";
 import { useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
 const { Header } = Layout;
-// const {
-//   role: { roleName },
-//   username,
-// } = JSON.parse(localStorage.getItem("token"));
+const {
+  role: { roleName },
+  username,
+} = JSON.parse(localStorage.getItem("token"));
 
 const items = [
   {
     key: "1",
-    // label: roleName,
-    label: "admin",
+    label: roleName,
+    // label: "admin",
   },
 
   {
@@ -26,7 +27,8 @@ const items = [
     label: "Logout",
   },
 ];
-export default function TopHeader() {
+function TopHeader(props) {
+  console.log(props.isCollapsed);
   const navigate = useNavigate();
   const onClick = ({ key }) => {
     if (key === "2") {
@@ -34,10 +36,13 @@ export default function TopHeader() {
       navigate("/login");
     }
   };
-  const [collapsed, setCollapsed] = useState(false);
+  //const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const changeCollapsed = () => {
+    props.changeCollapsed();
+  };
   return (
     <Header
       style={{
@@ -47,7 +52,7 @@ export default function TopHeader() {
     >
       <div style={{ float: "right" }}>
         <span>
-          welcom back <span style={{ color: "blueviolet" }}>admin</span>
+          welcom back <span style={{ color: "blueviolet" }}>{username}</span>
         </span>
         {/* dropdown list here */}
         <Dropdown
@@ -66,8 +71,8 @@ export default function TopHeader() {
       </div>
       <Button
         type="text"
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => setCollapsed(!collapsed)}
+        icon={props.isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        onClick={() => changeCollapsed()}
         style={{
           fontSize: "16px",
           width: 64,
@@ -77,3 +82,16 @@ export default function TopHeader() {
     </Header>
   );
 }
+const mapStateToProps = ({ CollapsedReducer: { isCollapsed } }) => {
+  return {
+    isCollapsed,
+  };
+};
+const mapDispatchToProps = {
+  changeCollapsed() {
+    return {
+      type: "change_collapsed",
+    };
+  },
+};
+export default connect(mapStateToProps, mapDispatchToProps)(TopHeader);
