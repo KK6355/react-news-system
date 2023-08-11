@@ -85,7 +85,7 @@ export default function Audit() {
     axios
       .patch(`/news/${item.id}`, {
         auditState: auState,
-        pubState: pubState,
+        publishState: pubState,
       })
       .then((res) => {
         notification.info({
