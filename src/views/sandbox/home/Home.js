@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card, Col, Row, List, Avatar } from "antd";
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { PieChartOutlined } from "@ant-design/icons";
 import axios from "axios";
 import * as echarts from "echarts";
 import _ from "lodash";
@@ -12,7 +8,9 @@ const { Meta } = Card;
 export default function Home() {
   const [viewList, setViewList] = useState([]);
   const [starList, setStarList] = useState([]);
+  const [dataList, setDataList] = useState([]);
   const bar = useRef();
+  const pie = useRef();
   let {
     username,
     region,
@@ -45,6 +43,7 @@ export default function Home() {
     axios.get("/news?publishState=2&_expand=category").then((res) => {
       console.log(_.groupBy(res.data, (item) => item.category.title));
       renderBarChart(_.groupBy(res.data, (item) => item.category.title));
+      setDataList(res.data);
     });
   }, []);
   const renderBarChart = (data) => {
@@ -59,6 +58,9 @@ export default function Home() {
       xAxis: {
         type: "category",
         data: Object.keys(data),
+        axisLabel: {
+          rotate: "45",
+        },
       },
       yAxis: {
         type: "value",
@@ -73,6 +75,7 @@ export default function Home() {
           backgroundStyle: {
             color: "rgba(180, 180, 180, 0.2)",
           },
+          fontSiz: 10,
         },
       ],
     };
@@ -81,6 +84,51 @@ export default function Home() {
     window.onresize = () => {
       myChart.resize();
     };
+  };
+
+  const renderPieChart = () => {
+    var myChart = echarts.init(pie.current);
+    var option;
+    var currentList = dataList.filter((item) => item.author === username);
+    var groupData = _.groupBy(currentList, (item) => item.category.title);
+    var list = [];
+    for (var d in groupData) {
+      list.push({
+        name: d,
+        value: groupData[d].length,
+      });
+    }
+    option = {
+      title: {
+        text: "Current User Data",
+        subtext: "News Created Amount",
+        left: "center",
+      },
+      tooltip: {
+        trigger: "item",
+      },
+      legend: {
+        orient: "vertical",
+        left: "left",
+      },
+      series: [
+        {
+          name: "Access From",
+          type: "pie",
+          radius: "50%",
+          data: list,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+        },
+      ],
+    };
+
+    option && myChart.setOption(option);
   };
   return (
     <div>
@@ -120,9 +168,12 @@ export default function Home() {
               />
             }
             actions={[
-              <SettingOutlined key="setting" />,
-              <EditOutlined key="edit" />,
-              <EllipsisOutlined key="ellipsis" />,
+              <PieChartOutlined
+                key="setting"
+                onClick={() => {
+                  renderPieChart();
+                }}
+              />,
             ]}
           >
             <Meta
@@ -143,7 +194,14 @@ export default function Home() {
           </Card>
         </Col>
       </Row>
-      <div ref={bar} style={{ width: "100%", height: "300px" }}></div>
+      <Row style={{ paddingTop: "30px" }}>
+        <Col span={12}>
+          <div ref={bar} style={{ height: "280px" }}></div>
+        </Col>
+        <Col span={12}>
+          <div ref={pie} style={{ height: "300px" }}></div>
+        </Col>
+      </Row>
     </div>
   );
 }
