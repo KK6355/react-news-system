@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
+import { Spin } from "antd";
+import { connect } from "react-redux";
 import Home from "./home/Home";
 import UserList from "./user-manage/UserList";
 import RoleList from "./right-manage/RoleList";
@@ -32,7 +34,7 @@ const LocalRouterMap = {
   "/publish-manage/unpublished": <Unpublished />,
   "/publish-manage/sunset": <Sunset />,
 };
-export default function NewsRouter() {
+function NewsRouter(props) {
   const [backRouteList, setBackRouteList] = useState([]);
   useEffect(() => {
     Promise.all([
@@ -54,24 +56,35 @@ export default function NewsRouter() {
   const checkUserPermission = (item) => {
     return rights.includes(item.key);
   };
+  console.log(props.isLoading);
   return (
     <div>
-      <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        {backRouteList.map((item) => {
-          if (checkRoute(item) && checkUserPermission(item)) {
-            return (
-              <Route
-                path={item.key}
-                key={item.key}
-                element={LocalRouterMap[item.key]}
-              />
-            );
-          }
-          return null;
-        })}
-        <Route path="*" element={<NoPermission />} />
-      </Routes>
+      {" "}
+      <Spin size="large" spinning={props.isLoading}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          {backRouteList.map((item) => {
+            if (checkRoute(item) && checkUserPermission(item)) {
+              return (
+                <Route
+                  path={item.key}
+                  key={item.key}
+                  element={LocalRouterMap[item.key]}
+                />
+              );
+            }
+            return null;
+          })}
+          <Route path="*" element={<NoPermission />} />
+        </Routes>
+      </Spin>
     </div>
   );
 }
+const mapStateToProps = ({ LoadingReducer: { isLoading } }) => {
+  return {
+    isLoading,
+  };
+};
+
+export default connect(mapStateToProps)(NewsRouter);

@@ -63,7 +63,12 @@ function TopHeader(props) {
         >
           <a onClick={(e) => e.preventDefault()}>
             <Space>
-              <Avatar size="large" icon={<UserOutlined />} />
+              <Avatar
+                size="middle"
+                icon={<UserOutlined />}
+                style={{ marginLeft: "20px" }}
+                src="https://xsgames.co/randomusers/avatar.php?g=pixel"
+              />
               <DownOutlined />
             </Space>
           </a>
