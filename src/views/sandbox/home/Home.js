@@ -196,7 +196,7 @@ export default function Home() {
       </Row>
       <Row style={{ paddingTop: "30px" }}>
         <Col span={12}>
-          <div ref={bar} style={{ height: "280px" }}></div>
+          <div ref={bar} style={{ height: "300px" }}></div>
         </Col>
         <Col span={12}>
           <div ref={pie} style={{ height: "300px" }}></div>

@@ -67,7 +67,9 @@ function SideMenu(props) {
   const defaultOpenKeys = ["/" + useLocation().pathname.split("/")[1]];
   return (
     <Sider trigger={null} collapsible collapsed={props.isCollapsed}>
-      <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
+      <div
+        style={{ display: "flex", height: "100vh", flexDirection: "column" }}
+      >
         <div className="logo">Global News System</div>
         <div style={{ flex: 1, overflow: "auto" }}>
           <Menu
